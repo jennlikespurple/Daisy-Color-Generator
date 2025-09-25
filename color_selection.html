@@ -9,26 +9,20 @@
         /* Responsive container and gutters */
         :root { --page-gutter: 16px; }
     body { box-sizing: border-box; padding-left: var(--page-gutter); padding-right: var(--page-gutter); line-height: 1.5; font-size: 20px; }
-        .container { width: 100%; max-width: 700px; margin: 0 auto; box-sizing: border-box; }
+        .container { width: 100%; max-width: 390px; margin: 0 auto; box-sizing: border-box; }
 
     /* Make the SVG scale to available width while keeping a reasonable maximum and center it */
-    #daisy-svg { width: 100%; max-width: 320px; height: auto; display: block; margin: 20px auto 0; }
+    #daisy-svg { width: 100%; max-width: 390px; height: auto; display: block; margin: 20px auto 0; }
 
         /* Slightly larger hit area for the button on mobile */
         #generate-btn { min-width: 160px; }
 
-        /* Reduce gutters on small screens */
-        @media (max-width: 480px) {
-            :root { --page-gutter: 8px; }
-            .container { padding-left: 4px; padding-right: 4px; }
-            #generate-btn { width: 100%; box-sizing: border-box; }
-        }
     </style>
 </head>
 <body onload="brython()" style="display:flex;flex-direction:column;align-items:center;justify-content:flex-start;min-height:100vh;background:#23272a;color:#fff;font-family:'Lato',sans-serif;font-weight:300;">
     <div class="container">
         <h1 style="text-align:center;color:#fff;font-family:'Lato',sans-serif;font-weight:300;">Daisy Color Generator</h1>
-        <button id="generate-btn" style="display:block;margin:0.5rem auto;color:#fff;background:#2c2f33;border:none;padding:10px 20px;border-radius:6px;">Generate Colors</button>
+        <button id="generate-btn" style="display:block;margin:0.5rem auto;font-size:14px;color:#fff;background:#2c2f33;border:none;padding:10px 20px;border-radius:6px;">Generate</button>
         <div id="color-output" style="margin-top:25px;text-align:center;color:#fff;"></div>
         <svg id="daisy-svg" width="200" height="200"></svg>
     </div>
@@ -103,7 +97,9 @@ def generate_colors(ev):
     labels = ["Border", "Background", "Petals", "Center"]
     output = ""
     for label, (name, hex_value) in zip(labels, selected):
-        output += f"<div><strong>{label}:</strong> {name} <span style='background:{hex_value};padding:0 1em;border:1px solid #ccc;color:#23272a;'>{hex_value}</span></div>"
+        # small square swatch followed by the hex text
+        swatch = f"<span style='display:inline-block;width:20px;height:20px;background:{hex_value};margin-left:8px;vertical-align:middle;'></span>"
+        output += f"<div style='margin:6px 0;'><strong>{label}:</strong> {name} {swatch} </div>"
     document["color-output"].html = output
 
     background_hex = selected[1][1]
