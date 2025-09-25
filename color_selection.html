@@ -6,8 +6,6 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/brython@3.9.5/brython.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/brython@3.9.5/brython_stdlib.js"></script>
     <style>
-        /* Responsive container and gutters */
-        :root { --page-gutter: 16px; }
         body { box-sizing: border-box; padding-left: var(--page-gutter); padding-right: var(--page-gutter); line-height: 1.5; font-size: 20px; }
             .container { width: 100%; max-width: 390px; margin: 0 auto; box-sizing: border-box; }
 
@@ -30,7 +28,7 @@
         #generate-btn { min-width: 160px; }
 
     
-        @media (max-width: 480px) {
+        @media only screen and (max-width: 600px) {
             :root { --page-gutter: 8px; }
             .container {
                 max-width: 100%;
