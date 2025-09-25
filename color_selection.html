@@ -110,13 +110,37 @@ def generate_colors(ev):
     border_hex = selected[0][1]
     svg_elem = document["daisy-svg"]
     svg_elem.clear()
-    square_size = 180
-    square = svg.rect(x=10, y=10, width=square_size, height=square_size, fill=background_hex, stroke=border_hex, stroke_width=10)
+
+    # Determine displayed SVG size so we can scale the drawing for small screens
+    try:
+        rect = svg_elem.getBoundingClientRect()
+        w = rect.width or 200
+        h = rect.height or w
+    except Exception:
+        # Fallback to attribute sizes if getBoundingClientRect isn't available
+        try:
+            w = float(svg_elem.attrs.get('width', 200))
+        except Exception:
+            w = 200
+        try:
+            h = float(svg_elem.attrs.get('height', w))
+        except Exception:
+            h = w
+
+    # Base drawing was designed for 200x200; compute scale factor
+    base = 200.0
+    scale = float(w) / base if base else 1.0
+
+    padding = 10 * scale
+    square_size = max(10, min(w, h) - padding * 2)
+    stroke_w = max(1, 10 * scale)
+    square = svg.rect(x=padding, y=padding, width=square_size, height=square_size, fill=background_hex, stroke=border_hex, stroke_width=stroke_w)
     svg_elem <= square
 
-    cx, cy = 100, 100
-    petal_length = 10
-    petal_width = 60
+    cx = padding + square_size / 2
+    cy = padding + square_size / 2
+    petal_length = max(4, 10 * scale)
+    petal_width = max(8, 60 * scale)
     petals_hex = selected[2][1]
     for i in range(8):
         angle = i * 45
@@ -124,7 +148,8 @@ def generate_colors(ev):
         petal = svg.path(d=path_str, fill=petals_hex, stroke="none", stroke_width=0)
         svg_elem <= petal
     center_hex = selected[-1][1]
-    circle = svg.circle(cx=cx, cy=cy, r=20, fill=center_hex, stroke="none", stroke_width=0)
+    circle_r = max(6, 20 * scale)
+    circle = svg.circle(cx=cx, cy=cy, r=circle_r, fill=center_hex, stroke="none", stroke_width=0)
     svg_elem <= circle
 
 document["generate-btn"].bind("click", generate_colors)
