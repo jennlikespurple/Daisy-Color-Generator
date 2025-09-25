@@ -8,11 +8,11 @@
     <style>
         /* Responsive container and gutters */
         :root { --page-gutter: 16px; }
-        body { box-sizing: border-box; padding-left: var(--page-gutter); padding-right: var(--page-gutter); }
+    body { box-sizing: border-box; padding-left: var(--page-gutter); padding-right: var(--page-gutter); line-height: 1.5; font-size: 20px; }
         .container { width: 100%; max-width: 700px; margin: 0 auto; box-sizing: border-box; }
 
-        /* Make the SVG scale to available width while keeping a reasonable maximum */
-        #daisy-svg { width: 100%; max-width: 320px; height: auto; display: block; margin-top: 20px; }
+    /* Make the SVG scale to available width while keeping a reasonable maximum and center it */
+    #daisy-svg { width: 100%; max-width: 320px; height: auto; display: block; margin: 20px auto 0; }
 
         /* Slightly larger hit area for the button on mobile */
         #generate-btn { min-width: 160px; }
