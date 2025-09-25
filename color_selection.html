@@ -8,15 +8,40 @@
     <style>
         /* Responsive container and gutters */
         :root { --page-gutter: 16px; }
-    body { box-sizing: border-box; padding-left: var(--page-gutter); padding-right: var(--page-gutter); line-height: 1.5; font-size: 20px; }
-        .container { width: 100%; max-width: 390px; margin: 0 auto; box-sizing: border-box; }
+        body { box-sizing: border-box; padding-left: var(--page-gutter); padding-right: var(--page-gutter); line-height: 1.5; font-size: 20px; }
+            .container { width: 100%; max-width: 390px; margin: 0 auto; box-sizing: border-box; }
 
-    /* Make the SVG scale to available width while keeping a reasonable maximum and center it */
-    #daisy-svg { width: 100%; max-width: 390px; height: auto; display: block; margin: 20px auto 0; }
+            .color-output { margin-top:25px;text-align:center;color:#fff; }
+            .color-label-row { margin: 6px 0; display: flex; align-items: center; justify-content: center; gap: 10px; }
+            .color-label-row strong { min-width: 80px; text-align: right; font-weight: 400; }
+            .color-swatch {
+                display: inline-block;
+                width: 16px;
+                height: 16px;
+                border: 1px solid #ccc;
+                margin-left: 8px;
+                vertical-align: middle;
+            }
+
+        /* Make the SVG scale to available width while keeping a reasonable maximum and center it */
+        #daisy-svg { width: 100%; max-width: 390px; height: auto; display: block; margin: 20px auto 0; }
 
         /* Slightly larger hit area for the button on mobile */
         #generate-btn { min-width: 160px; }
 
+    
+        @media (max-width: 480px) {
+            :root { --page-gutter: 8px; }
+            .container {
+                max-width: 100%;
+                width: 100vw;
+                margin: 0;
+                padding-left: 0;
+                padding-right: 0;
+                box-sizing: border-box;
+            }
+            #generate-btn { width: 100%; box-sizing: border-box; }
+        }
     </style>
 </head>
 <body onload="brython()" style="display:flex;flex-direction:column;align-items:center;justify-content:flex-start;min-height:100vh;background:#23272a;color:#fff;font-family:'Lato',sans-serif;font-weight:300;">
@@ -97,9 +122,8 @@ def generate_colors(ev):
     labels = ["Border", "Background", "Petals", "Center"]
     output = ""
     for label, (name, hex_value) in zip(labels, selected):
-        # small square swatch followed by the hex text
-        swatch = f"<span style='display:inline-block;width:20px;height:20px;background:{hex_value};margin-left:8px;vertical-align:middle;'></span>"
-        output += f"<div style='margin:6px 0;'><strong>{label}:</strong> {name} {swatch} </div>"
+        swatch = f"<span class='color-swatch' style='background:{hex_value};'></span>"
+        output += f"<div class='color-label-row'><strong>{label}:</strong> {name} {swatch}</div>"
     document["color-output"].html = output
 
     background_hex = selected[1][1]
