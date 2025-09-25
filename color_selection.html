@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Daisy Color Generator</title>
+    <link href="https://fonts.googleapis.com/css?family=Lato:100,300,400,700&display=swap" rel="stylesheet">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/brython@3.9.5/brython.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/brython@3.9.5/brython_stdlib.js"></script>
+</head>
+<body onload="brython()" style="display:flex;flex-direction:column;align-items:center;justify-content:flex-start;min-height:100vh;background:#23272a;color:#fff;font-family:'Lato',sans-serif;font-weight:300;">
+    <h1 style="text-align:center;color:#fff;font-family:'Lato',sans-serif;font-weight:300;">Daisy Color Generator</h1>
+    <button id="generate-btn" style="margin:0 auto;color:#fff;background:#2c2f33;border:none;padding:10px 20px;border-radius:6px;">Generate Colors</button>
+    <div id="color-output" style="margin-top:25px;text-align:center;color:#fff;"></div>
+    <svg id="daisy-svg" width="200" height="200" style="display:block;margin-top:20px;"></svg>
+    <script type="text/python">
+from browser import document, svg
+import random
+import math
+
+yarn_colors = [
+    ["orchid bloom", "#DA70D6"],
+    ["clear blue", "#00BFFF"],
+    ["peach pink", "#FF69B4"],
+    ["lippy", "#FF4500"],
+    ["lemon", "#FFFFE0"],
+    ["pumpkin", "#FFA500"],
+    ["white", "#FFFFFF"],
+    ["barely pink", "#D3D3D3"],
+    ["lavender", "#D8BFD8"],
+    ["blue haze", "#ADD8E6"],
+    ["deep forest", "#90EE90"],
+    ["fern", "#FFDEAD"],
+    ["butterscotch", "#F5F5DC"],
+    ["aran", "#D2B48C"],
+    ["soft rose", "#FFB6C1"],
+    ["sea green", "#20B2AA"],
+    ["coral", "#FF7F50"],
+    ["eggplant", "#800080"],
+    ["sphagnum", "#556B2F"],
+    ["jasmine green", "#6B8E23"],
+    ["sunny day", "#FFD700"],
+    ["citron", "#FFFF00"],
+    ["orchid", "#DA70D6"]
+]
+
+def teardrop_path(cx, cy, angle, length, width):
+    tip_x = cx
+    tip_y = cy
+    rad = math.radians(angle)
+    base_x = cx + length * math.cos(rad)
+    base_y = cy + length * math.sin(rad)
+    left_rad = math.radians(angle - 20)
+    right_rad = math.radians(angle + 20)
+    left_x = base_x + width * math.cos(left_rad)
+    left_y = base_y + width * math.sin(left_rad)
+    right_x = base_x + width * math.cos(right_rad)
+    right_y = base_y + width * math.sin(right_rad)
+    control_x = cx + (length * 0.6) * math.cos(rad)
+    control_y = cy + (length * 0.6) * math.sin(rad)
+    base_control_x = base_x + width * 1.5 * math.cos(rad)
+    base_control_y = base_y + width * 1.5 * math.sin(rad)
+    return (
+        f"M {tip_x},{tip_y} "
+        f"Q {control_x},{control_y} {left_x},{left_y} "
+        f"Q {base_control_x},{base_control_y} {right_x},{right_y} "
+        f"Q {control_x},{control_y} {tip_x},{tip_y}"
+    )
+
+def generate_colors(ev):
+    # Randomly select four unique colors (name, hex) from yarn_colors
+    selected = random.sample(yarn_colors, 4)
+    labels = ["Border", "Background", "Petals", "Center"]
+    output = ""
+    for label, (name, hex_value) in zip(labels, selected):
+        output += f"<div><strong>{label}:</strong> {name} <span style='background:{hex_value};padding:0 1em;border:1px solid #ccc;color:#23272a;'>{hex_value}</span></div>"
+    document["color-output"].html = output
+
+    background_hex = selected[1][1]
+    border_hex = selected[0][1]
+    svg_elem = document["daisy-svg"]
+    svg_elem.clear()
+    square_size = 180
+    square = svg.rect(x=10, y=10, width=square_size, height=square_size, fill=background_hex, stroke=border_hex, stroke_width=10)
+    svg_elem <= square
+
+    cx, cy = 100, 100
+    petal_length = 10
+    petal_width = 60
+    petals_hex = selected[2][1]
+    for i in range(8):
+        angle = i * 45
+        path_str = teardrop_path(cx, cy, angle, petal_length, petal_width)
+        petal = svg.path(d=path_str, fill=petals_hex, stroke="none", stroke_width=0)
+        svg_elem <= petal
+    center_hex = selected[-1][1]
+    circle = svg.circle(cx=cx, cy=cy, r=20, fill=center_hex, stroke="none", stroke_width=0)
+    svg_elem <= circle
+
+document["generate-btn"].bind("click", generate_colors)
+    </script>
+</body>
+</html>
