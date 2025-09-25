@@ -8,25 +8,28 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/brython@3.9.5/brython_stdlib.js"></script>
     <style>
         body { box-sizing: border-box; padding-left: var(--page-gutter); padding-right: var(--page-gutter); line-height: 1.5; font-size: 20px; }
-            .container { width: 100%; max-width: 390px; margin: 0 auto; box-sizing: border-box; }
+            
+        h1 {text-align:center;color:#fff;font-family:'Lato',sans-serif;font-weight:300;}
+        
+        .container { width: 100%; max-width: 390px; margin: 0 auto; box-sizing: border-box; }
 
-            .color-output { margin-top:25px;text-align:center;color:#fff; }
-            .color-label-row { margin: 6px 0; display: flex; align-items: center; justify-content: center; gap: 10px; }
-            .color-label-row strong { min-width: 80px; text-align: right; font-weight: 400; }
-            .color-swatch {
-                display: inline-block;
-                width: 16px;
-                height: 16px;
-                border: 1px solid #ccc;
-                margin-left: 8px;
-                vertical-align: middle;
-            }
+        #color-output { margin-top:25px;text-align:center;color:#fff; }
+        .color-label-row { margin: 6px 0; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .color-label-row strong { min-width: 80px; text-align: right; font-weight: 400; }
+        .color-swatch {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 1px solid #ccc;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
 
         /* Make the SVG scale to available width while keeping a reasonable maximum and center it */
         #daisy-svg { width: 100%; max-width: 390px; height: auto; display: block; margin: 20px auto 0; }
 
         /* Slightly larger hit area for the button on mobile */
-        #generate-btn { min-width: 160px; }
+        #generate-btn { min-width: 160px; display:block;margin:0.5rem auto;font-size:14px;color:#fff;background:#2c2f33;border:none;padding:10px 20px;border-radius:6px;}
 
     
         @media only screen and (max-width: 600px) {
@@ -45,9 +48,9 @@
 </head>
 <body onload="brython()" style="display:flex;flex-direction:column;align-items:center;justify-content:flex-start;min-height:100vh;background:#23272a;color:#fff;font-family:'Lato',sans-serif;font-weight:300;">
     <div class="container">
-        <h1 style="text-align:center;color:#fff;font-family:'Lato',sans-serif;font-weight:300;">Daisy Color Generator</h1>
-        <button id="generate-btn" style="display:block;margin:0.5rem auto;font-size:14px;color:#fff;background:#2c2f33;border:none;padding:10px 20px;border-radius:6px;">Generate</button>
-        <div id="color-output" style="margin-top:25px;text-align:center;color:#fff;"></div>
+        <h1>Daisy Color Generator</h1>
+        <button id="generate-btn">&#x2728; &#x1F33C; &#x2728;</button>
+        <div id="color-output"></div>
         <svg id="daisy-svg" width="200" height="200"></svg>
     </div>
     <script type="text/python">
