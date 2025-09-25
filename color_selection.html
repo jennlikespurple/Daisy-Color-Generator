@@ -5,14 +5,35 @@
     <link href="https://fonts.googleapis.com/css?family=Lato:100,300,400,700&display=swap" rel="stylesheet">
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/brython@3.9.5/brython.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/brython@3.9.5/brython_stdlib.js"></script>
+    <style>
+        /* Responsive container and gutters */
+        :root { --page-gutter: 16px; }
+        body { box-sizing: border-box; padding-left: var(--page-gutter); padding-right: var(--page-gutter); }
+        .container { width: 100%; max-width: 700px; margin: 0 auto; box-sizing: border-box; }
+
+        /* Make the SVG scale to available width while keeping a reasonable maximum */
+        #daisy-svg { width: 100%; max-width: 320px; height: auto; display: block; margin-top: 20px; }
+
+        /* Slightly larger hit area for the button on mobile */
+        #generate-btn { min-width: 160px; }
+
+        /* Reduce gutters on small screens */
+        @media (max-width: 480px) {
+            :root { --page-gutter: 8px; }
+            .container { padding-left: 4px; padding-right: 4px; }
+            #generate-btn { width: 100%; box-sizing: border-box; }
+        }
+    </style>
 </head>
 <body onload="brython()" style="display:flex;flex-direction:column;align-items:center;justify-content:flex-start;min-height:100vh;background:#23272a;color:#fff;font-family:'Lato',sans-serif;font-weight:300;">
-    <h1 style="text-align:center;color:#fff;font-family:'Lato',sans-serif;font-weight:300;">Daisy Color Generator</h1>
-    <button id="generate-btn" style="margin:0 auto;color:#fff;background:#2c2f33;border:none;padding:10px 20px;border-radius:6px;">Generate Colors</button>
-    <div id="color-output" style="margin-top:25px;text-align:center;color:#fff;"></div>
-    <svg id="daisy-svg" width="200" height="200" style="display:block;margin-top:20px;"></svg>
+    <div class="container">
+        <h1 style="text-align:center;color:#fff;font-family:'Lato',sans-serif;font-weight:300;">Daisy Color Generator</h1>
+        <button id="generate-btn" style="display:block;margin:0.5rem auto;color:#fff;background:#2c2f33;border:none;padding:10px 20px;border-radius:6px;">Generate Colors</button>
+        <div id="color-output" style="margin-top:25px;text-align:center;color:#fff;"></div>
+        <svg id="daisy-svg" width="200" height="200"></svg>
+    </div>
     <script type="text/python">
-from browser import document, svg
+from browser import document, svg, timer
 import random
 import math
 
@@ -54,8 +75,8 @@ def teardrop_path(cx, cy, angle, length, width):
     left_y = base_y + width * math.sin(left_rad)
     right_x = base_x + width * math.cos(right_rad)
     right_y = base_y + width * math.sin(right_rad)
-    control_x = cx + (length * 0.6) * math.cos(rad)
-    control_y = cy + (length * 0.6) * math.sin(rad)
+    control_x = cx + (length * 0.8) * math.cos(rad)
+    control_y = cy + (length * 0.8) * math.sin(rad)
     base_control_x = base_x + width * 1.5 * math.cos(rad)
     base_control_y = base_y + width * 1.5 * math.sin(rad)
     return (
@@ -67,7 +88,18 @@ def teardrop_path(cx, cy, angle, length, width):
 
 def generate_colors(ev):
     # Randomly select four unique colors (name, hex) from yarn_colors
-    selected = random.sample(yarn_colors, 4)
+    # Ensure unique hex values by deduplicating the source list by hex first
+    unique = []
+    seen = set()
+    for name, hex_value in yarn_colors:
+        if hex_value not in seen:
+            unique.append((name, hex_value))
+            seen.add(hex_value)
+    if len(unique) >= 4:
+        selected = random.sample(unique, 4)
+    else:
+        selected = random.sample(yarn_colors, 4)
+
     labels = ["Border", "Background", "Petals", "Center"]
     output = ""
     for label, (name, hex_value) in zip(labels, selected):
