@@ -4,14 +4,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daisy Color Generator</title>
     <link href="https://fonts.googleapis.com/css?family=Lato:100,300,400,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Chicle&display=swap" rel="stylesheet">
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/brython@3.9.5/brython.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/brython@3.9.5/brython_stdlib.js"></script>
     <style>
-        body { box-sizing: border-box; padding-left: var(--page-gutter); padding-right: var(--page-gutter); line-height: 1.5; font-size: 20px; }
+        body { 
+            box-sizing: border-box; 
+            padding-left: var(--page-gutter); 
+            padding-right: var(--page-gutter); 
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:flex-start;
+            min-height:100vh;
+            background:#23272a;
+            color:#fff;
+            line-height: 1.5; 
+            font-size: 20px;
+            font-family:'Lato',sans-serif;
+            font-weight:300
+        }
             
-        h1 {text-align:center;color:#fff;font-family:'Lato',sans-serif;font-weight:300;}
+        h1 {
+            text-align:center;
+            color:#fff;
+            font-family:'Chicle', 'Lato', sans-serif;
+            font-weight:300;
+        }
         
-        .container { width: 100%; max-width: 390px; margin: 0 auto; box-sizing: border-box; }
+        .container { 
+            width: 100%; 
+            max-width: 390px; 
+            margin: 0 auto; 
+            box-sizing: border-box; 
+        }
 
         #color-output { margin-top:25px;text-align:center;color:#fff; }
         .color-label-row { margin: 6px 0; display: flex; align-items: center; justify-content: center; gap: 10px; }
@@ -29,7 +55,7 @@
         #daisy-svg { width: 100%; max-width: 390px; height: auto; display: block; margin: 20px auto 0; }
 
         /* Slightly larger hit area for the button on mobile */
-        #generate-btn { min-width: 160px; display:block;margin:0.5rem auto;font-size:14px;color:#fff;background:#2c2f33;border:none;padding:10px 20px;border-radius:6px;}
+        #generate-btn { min-width: 160px; display:block;margin:0.5rem auto;font-size:14px;letter-spacing:0.1em;border:none;padding:10px 20px;border-radius:6px;}
 
     
         @media only screen and (max-width: 600px) {
@@ -47,10 +73,10 @@
         }
     </style>
 </head>
-<body onload="brython()" style="display:flex;flex-direction:column;align-items:center;justify-content:flex-start;min-height:100vh;background:#23272a;color:#fff;font-family:'Lato',sans-serif;font-weight:300;">
+<body onload="brython()" >
     <div class="container">
-        <h1>Daisy Color Generator</h1>
-        <button id="generate-btn">&#x2728; &#x1F33C; &#x2728;</button>
+        <h1>Daisy Color Generator &#x1F33C;&#x2728;</h1>
+        <button id="generate-btn">>> CLICK FOR MAGIC <<</button>
         <div id="color-output"></div>
         <svg id="daisy-svg" width="200" height="200"></svg>
     </div>
@@ -85,6 +111,28 @@ yarn_colors = [
     ["orchid", "#D197A6"]
 ]
 
+
+def hex_to_rgb(hex_str):
+    """Return (r,g,b) tuple for a hex color like '#RRGGBB'."""
+    h = hex_str.lstrip('#')
+    if len(h) == 3:
+        h = ''.join([c*2 for c in h])
+    try:
+        r = int(h[0:2], 16)
+        g = int(h[2:4], 16)
+        b = int(h[4:6], 16)
+        return (r, g, b)
+    except Exception:
+        return (0, 0, 0)
+
+
+def readable_text_color(hex_str, dark='#2c2f33', light='#ffffff'):
+    """Return dark or light text color depending on the perceived brightness of hex_str."""
+    r, g, b = hex_to_rgb(hex_str)
+    # Perceived brightness formula
+    brightness = (r * 299 + g * 587 + b * 114) / 1000
+    return light if brightness < 128 else dark
+
 def teardrop_path(cx, cy, angle, length, width):
     tip_x = cx
     tip_y = cy
@@ -109,6 +157,16 @@ def teardrop_path(cx, cy, angle, length, width):
     )
 
 def generate_colors(ev):
+    # Set a random background color for the generate button on every click
+    try:
+        btn_choice = random.choice(yarn_colors)
+        btn_hex = btn_choice[1]
+    except Exception:
+        btn_hex = '#2c2f33'
+    btn_text = readable_text_color(btn_hex)
+    document['generate-btn'].style.background = btn_hex
+    document['generate-btn'].style.color = btn_text
+
     # Randomly select four unique colors (name, hex) from yarn_colors
     # Ensure unique hex values by deduplicating the source list by hex first
     unique = []
